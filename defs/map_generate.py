@@ -57,7 +57,7 @@ def create_initial_population():
                 else:
                     row.append(EMPTY)
             map_data.append(row)
-        add_random_walls(map_data)
+        # add_random_walls(map_data)
         for y in range(1, MAP_HEIGHT - 1):
             for x in range(1, MAP_WIDTH - 1):
                 if map_data[y][x] == EMPTY:
@@ -105,8 +105,8 @@ def mutate(map_data):
                         map_data[i][j] = POISON
                     elif rand_val < 0.03:
                         map_data[i][j] = MOB
-                    elif rand_val < 0.10:
-                        map_data[i][j] = WALL
+                    # elif rand_val < 0.10:
+                    #     map_data[i][j] = WALL
                     else:
                         map_data[i][j] = EMPTY
     return map_data
@@ -184,3 +184,4 @@ def draw_map(map_img, all_gen):  # функция отрисовки карты 
         obj_map.append(s)
     # print(all_emp_cells)
     return obj_map
+

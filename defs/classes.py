@@ -19,7 +19,7 @@ def map_transform(the_obj, all_obj: list):  # изменение яда на е�
 
 
 class Mob:
-    def __init__(self, x, y, gen, id, colour=(255, 255, 255), energy: int = 20, life: int = 0):
+    def __init__(self, x, y, gen, id, colour=(100, 100, 100), energy: int = 40, life: int = 0):
         self.coordinates = [x, y]
         self.id = id
         self.orientation = random.randint(0, 7)  # изначально задается случайное направление куда он смотрит
@@ -142,14 +142,14 @@ class Mob:
             return [x - 1, y + 1]
 
     def direction(self, arg: int):
-        self.orientation = (self.orientation + arg) % 8
+        self.orientation = (self.orientation + arg) % 2
 
 
 class Wall:
     def __init__(self, x, y):
         self.coordinates = [x, y]
         self.id = 2
-        self.colour = (31, 52, 56)
+        self.colour = (255, 255, 255)
 
     def can_be_eaten(self, by_obj):
         return 0
@@ -159,7 +159,7 @@ class Food:
     def __init__(self, x, y):
         self.coordinates = [x, y]
         self.id = 3
-        self.colour = (235, 235, 97)
+        self.colour = (125, 125, 0)
 
     def can_be_eaten(self, by_obj):  # функция позволяющая узнать, можно ли кусь этот объект
         return FOOD_ENERGY_BOOST
@@ -169,7 +169,7 @@ class Poison:
     def __init__(self, x, y):
         self.coordinates = [x, y]
         self.id = 4
-        self.colour = (139, 0, 255)
+        self.colour = (255, 50, 0)
 
     def can_be_eaten(self, by_obj):
         return -10
