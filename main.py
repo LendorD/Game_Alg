@@ -9,7 +9,6 @@ from defs.gen_generate import gen_create, all_gen_generate, game_folder
 from defs.classes import Mob, Food, Poison
 from defs.map_generate import generate_map_gen_al, draw_map
 
-
 pygame.init()  # инициализация библиотеки
 generate_map_gen_al()
 img_folder = os.path.join(game_folder, 'img')  # Определение пути к пнг файлам
@@ -24,6 +23,19 @@ random.shuffle(all_gen)  # мешаем их, чтоб потом раздать
 screen = pygame.display.set_mode((1500, 750))  # наше окно с симуляцией
 clock = pygame.time.Clock()
 all_obj = draw_map(map_img, all_gen)
+
+def generate_life_span():
+    return int(random.gauss(100, 15))
+
+def should_reproduce():
+    return random.random() < 0.3
+
+def mutate_gen(gen):
+    new_gen = copy.deepcopy(gen)
+    for _ in range(3):  # Мутация трех случайных команд
+        index = random.randint(0, len(new_gen) - 1)
+        new_gen[index] = random.choice(range(COMMAND_AMOUNT))
+    return new_gen
 
 while evo_life < 1000:
     for event in pygame.event.get():  # закрытие окна
@@ -66,7 +78,7 @@ while evo_life < 1000:
                         all_obj[i][j].life += 1
                         all_obj[i][j].update(all_obj)
             else:
-                if random.randint(1, 2000) == 1:
+                if random.randint(1, 4000) == 1:  # уменьшили вероятность появления еды
                     if random.randint(1, 10) == 1:
                         all_obj[i][j] = Poison(i, j)
                     else:
@@ -98,17 +110,12 @@ while evo_life < 1000:
 
         for i in range(5):
             for j in range(SIZE_POPULATION - 1):
-                all_gen.append(copy.deepcopy(all_gen[i]))
-
-        for i in range(5):  # тут происходит мутация трех случайных команд, у каждого пяти мобов с разными генами
-            for j in range(3):
-                r1 = random.randint(0, COMMAND_AMOUNT)
-                r2 = random.randint(1, COMMAND_AMOUNT + 1)
-                # print('all_gen', all_gen[i], len(all_gen), len(all_gen[i]))
-                all_gen[i][r1] = r2 - 1
+                new_gen = copy.deepcopy(all_gen[i])
+                if should_reproduce():
+                    new_gen = mutate_gen(new_gen)
+                all_gen.append(new_gen)
 
         random.shuffle(all_gen)  # опять мешаем гены, чтоб потом раздать
-        #print(evo_years, mob_s_text, evo_life)
         writer.writerow([evo_life])
         f.flush()
         evo_life = 0
@@ -118,3 +125,8 @@ while evo_life < 1000:
     f.close()
     pygame.display.flip()
     clock.tick(current_ticks)
+
+
+
+
+
